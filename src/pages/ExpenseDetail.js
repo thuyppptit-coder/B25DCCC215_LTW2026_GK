@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formatMoney } from '../data';
 
-const ExpenseDetail = ({ expenses }) => {
+const ExpenseDetail = ({ expenses = [] }) => {
     const { id } = useParams();
     const navigate = useNavigate();
 

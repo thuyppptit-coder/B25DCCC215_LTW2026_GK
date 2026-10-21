@@ -6,14 +6,26 @@ import Home from './pages/Home';
 import ExpenseList from './pages/ExpenseList';
 import AddExpense from './pages/AddExpense';
 import ExpenseDetail from './pages/ExpenseDetail';
+import './App.css';
 
 const App = () => {
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [expenses, setExpenses] = useState(() => {
+    const saved = localStorage.getItem("gk_expenses");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [loading, setLoading] = useState(() => {
+    return !localStorage.getItem("gk_expenses");
+  });
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const saved = localStorage.getItem("gk_expenses");
+    if (saved) {
+      setLoading(false);
+      return;
+    }
+
     const controller = new AbortController();
     axios.get("/data/expenses.json", { signal: controller.signal })
       .then(res => {
@@ -28,6 +40,12 @@ const App = () => {
       });
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem("gk_expenses", JSON.stringify(expenses));
+    }
+  }, [expenses, loading]);
 
   const deleteExpense = (id) => {
     setExpenses(expenses.filter(item => item.id !== id));

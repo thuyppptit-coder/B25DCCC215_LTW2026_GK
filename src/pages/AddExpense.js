@@ -14,10 +14,15 @@ const AddExpense = ({ onAdd }) => {
             setErrorMsg('Vui lòng nhập đầy đủ thông tin phía dưới form');
             return;
         }
+        const numAmount = Number(amount);
+        if (!Number.isInteger(numAmount) || numAmount < 1000 || numAmount > 100000000) {
+            setErrorMsg('Số tiền phải từ 1.000 đến 100.000.000');
+            return;
+        }
         setErrorMsg('');
         onAdd({
             title,
-            amount: Number(amount),
+            amount: numAmount,
             category,
             date
         });
